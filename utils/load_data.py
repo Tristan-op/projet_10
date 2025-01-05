@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import pickle
 from azure.storage.blob import BlobServiceClient
-import io
+import io  # Ajout de l'importation pour remplacer pandas.compat.StringIO
 
 # Charger la chaîne de connexion depuis les variables d'environnement
 BLOB_CONNECTION_STRING = os.getenv("BLOB_CONNECTION_STRING")
@@ -48,7 +48,7 @@ def get_embeddings():
         logging.error("Impossible de charger les métadonnées des articles.")
         return None, None
 
-    articles_metadata = pd.read_csv(pd.compat.StringIO(metadata_data.decode('utf-8')))
+    articles_metadata = pd.read_csv(io.StringIO(metadata_data.decode('utf-8')))  # Utilisation de io.StringIO
     article_ids = articles_metadata["article_id"].tolist()
 
     return embedding_matrix, article_ids
@@ -64,23 +64,8 @@ def get_user_clicks():
         logging.error("Impossible de charger les clics utilisateur.")
         return None
 
-    clicks_sample = pd.read_csv(pd.compat.StringIO(clicks_data.decode('utf-8')))
+    clicks_sample = pd.read_csv(io.StringIO(clicks_data.decode('utf-8')))  # Utilisation de io.StringIO
     return clicks_sample
-
-def get_trending_articles(top_n=10):
-    """
-    Identifie les articles les plus populaires (en termes de clics).
-    
-    :param top_n: Nombre d'articles les plus populaires à retourner.
-    :return: Liste des IDs des articles les plus populaires.
-    """
-    clicks_sample = get_user_clicks()
-    if clicks_sample is None:
-        logging.error("Impossible de calculer les tendances globales.")
-        return []
-
-    trending_articles = clicks_sample["click_article_id"].value_counts().head(top_n).index.tolist()
-    return trending_articles
 
 def initialize_global_data():
     """
