@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import pickle
 from azure.storage.blob import BlobServiceClient
+import io
 
 # Charger la chaîne de connexion depuis les variables d'environnement
 BLOB_CONNECTION_STRING = os.getenv("BLOB_CONNECTION_STRING")
