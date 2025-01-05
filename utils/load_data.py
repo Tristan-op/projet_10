@@ -53,6 +53,22 @@ def get_embeddings():
 
     return embedding_matrix, article_ids
 
+def get_trending_articles(top_n=10):
+    """
+    Identifie les articles les plus populaires (en termes de clics).
+
+    :param top_n: Nombre d'articles les plus populaires à retourner.
+    :return: Liste des IDs des articles les plus populaires.
+    """
+    clicks_sample = get_user_clicks()
+    if clicks_sample is None:
+        logging.error("Impossible de calculer les tendances globales.")
+        return []
+
+    trending_articles = clicks_sample["click_article_id"].value_counts().head(top_n).index.tolist()
+    return trending_articles
+
+
 def get_user_clicks():
     """
     Charge les clics utilisateurs depuis les fichiers horaires concaténés.
