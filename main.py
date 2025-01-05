@@ -3,9 +3,13 @@ from azure.storage.blob import BlobServiceClient
 from utils.load_data import load_blob_data, get_embeddings, get_user_clicks
 from utils.recommend_logic import generate_recommendations
 from utils.user_data import mark_article_as_read
+import os
+
 
 # Configuration de connexion au Blob Storage
-BLOB_CONNECTION_STRING = st.secrets["BLOB_CONNECTION_STRING"]
+BLOB_CONNECTION_STRING = os.getenv("BLOB_CONNECTION_STRING")
+if not BLOB_CONNECTION_STRING:
+    raise ValueError("La chaîne de connexion BLOB_CONNECTION_STRING est introuvable.")
 blob_service_client = BlobServiceClient.from_connection_string(BLOB_CONNECTION_STRING)
 
 # Titre de l'application
