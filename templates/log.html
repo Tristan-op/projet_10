@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CLARA - Logs</title>
+</head>
+<body>
+    <h1>Logs et Tests</h1>
+    <h2>Statut des fichiers :</h2>
+    <ul>
+        {% for file, status in file_status.items() %}
+            <li>{{ file }} : {{ status }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Statut des fonctions :</h2>
+    <ul>
+        {% for function, status in function_status.items() %}
+            <li>{{ function }} : {{ status }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Retour à l'accueil</a>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLARA - Recommandations</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>CLARA - Recommandations</h1>
+    </header>
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="{{ url_for('data') }}">Données</a>
+        <a href="{{ url_for('logs') }}">Logs</a>
+    </nav>
+    <div class="container">
+        <form method="post">
+            <label for="user_id">Sélectionnez un ID utilisateur :</label>
+            <select name="user_id">
+                {% for user_id in user_ids %}
+                    <option value="{{ user_id }}" {% if user_id == selected_user %}selected{% endif %}>{{ user_id }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Obtenir des recommandations</button>
+        </form>
+        {% if content_recs %}
+            <h2>Articles proposés d'après vos choix :</h2>
+            <ul>
+                {% for article in content_recs %}
+                    <li>Article ID : {{ article }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if collaborative_recs %}
+            <h2>Articles à la mode :</h2>
+            <ul>
+                {% for article in collaborative_recs %}
+                    <li>Article ID : {{ article }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if combined_recs %}
+            <h2>Recommandations combinées :</h2>
+            <ul>
+                {% for article in combined_recs %}
+                    <li>Article ID : {{ article }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <footer>
+        &copy; 2025 CLARA
+    </footer>
+</body>
+</html>

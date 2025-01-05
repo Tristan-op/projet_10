@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLARA - Données</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>CLARA - Données</h1>
+    </header>
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="{{ url_for('recommendations') }}">Recommandations</a>
+        <a href="{{ url_for('logs') }}">Logs</a>
+    </nav>
+    <div class="container">
+        <h2>Statistiques</h2>
+        <p><strong>Nombre d'articles :</strong> {{ num_articles }}</p>
+        <p><strong>Nombre d'utilisateurs :</strong> {{ num_users }}</p>
+    </div>
+    <footer>
+        &copy; 2025 CLARA
+    </footer>
+</body>
+</html>

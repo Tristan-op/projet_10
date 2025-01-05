@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLARA - Home</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Bienvenue sur CLARA</h1>
+        <p>Votre Conseillère en Ligne pour Assister à la Recommandation des Articles.</p>
+    </header>
+    <nav>
+        <a href="{{ url_for('data') }}">Données</a>
+        <a href="{{ url_for('recommendations') }}">Recommandations</a>
+        <a href="{{ url_for('logs') }}">Logs</a>
+    </nav>
+    <div class="container">
+        <h2>Explorez les données, obtenez des recommandations et surveillez les performances de l'application.</h2>
+    </div>
+    <footer>
+        &copy; 2025 CLARA
+    </footer>
+</body>
+</html>
