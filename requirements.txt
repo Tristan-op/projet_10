@@ -1,7 +1,7 @@
-streamlit
+flask
+gunicorn
 azure-functions
 azure-storage-blob
 pandas
 numpy
 scikit-learn
-
