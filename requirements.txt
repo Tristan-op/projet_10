@@ -1,1 +1,7 @@
-requirements.txt
+streamlit
+azure-functions
+azure-storage-blob
+pandas
+numpy
+scikit-learn
+
