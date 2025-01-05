@@ -1,34 +1,60 @@
-import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-from utils.load_data import get_embeddings, get_user_clicks, get_trending_articles
-from utils.user_data import get_articles_read
+import numpy as np
 
-def generate_recommendations(user_id, total_n=5, personalized_n=4):
+def recommend_content_based(user_id, embeddings, article_ids, user_clicks, top_n=5):
     """
-    Génère une liste d'articles recommandés pour un utilisateur.
+    Recommande des articles similaires à ceux lus par l'utilisateur.
     """
-    embedding_matrix, article_ids = get_embeddings()
-    if embedding_matrix is None or article_ids is None:
-        return []
-
-    articles_read = get_articles_read(user_id)
-    user_clicks = get_user_clicks()
-    if user_clicks is None or user_id not in user_clicks["user_id"].values:
-        return []
-
     clicked_articles = user_clicks[user_clicks["user_id"] == user_id]["click_article_id"].tolist()
-    clicked_embeddings = [embedding_matrix[article_ids.index(a)] for a in clicked_articles if a in article_ids]
-    if not clicked_embeddings:
-        return []
+    user_embeddings = [embeddings[article_ids.index(aid)] for aid in clicked_articles if aid in article_ids]
+    
+    if not user_embeddings:
+        return []  # Aucun article lu par l'utilisateur
 
-    user_profile = np.mean(clicked_embeddings, axis=0).reshape(1, -1)
-    similarities = cosine_similarity(user_profile, embedding_matrix)[0]
+    user_profile = np.mean(user_embeddings, axis=0).reshape(1, -1)
+    similarities = cosine_similarity(user_profile, embeddings)[0]
+    recommended_indices = np.argsort(similarities)[::-1]
+    recommended_articles = [
+        article_ids[i] for i in recommended_indices if article_ids[i] not in clicked_articles
+    ][:top_n]
 
-    recommendations = [
-        article_ids[i] for i in similarities.argsort()[::-1] if article_ids[i] not in articles_read
-    ][:personalized_n]
+    return recommended_articles
 
-    trending_articles = get_trending_articles()
-    trending_article = next((a for a in trending_articles if a not in articles_read), None)
+def recommend_collaborative(user_id, user_clicks, top_n=5):
+    """
+    Recommande des articles en fonction des utilisateurs similaires.
+    """
+    user_articles = user_clicks[user_clicks["user_id"] == user_id]["click_article_id"].tolist()
+    if not user_articles:
+        return []  # Aucun article lu par l'utilisateur
 
-    return recommendations + ([trending_article] if trending_article else [])
+    similar_users = user_clicks[user_clicks["click_article_id"].isin(user_articles)]["user_id"].unique()
+    similar_users = [u for u in similar_users if u != user_id]
+    recommended_articles = (
+        user_clicks[user_clicks["user_id"].isin(similar_users)]
+        .groupby("click_article_id")
+        .size()
+        .sort_values(ascending=False)
+        .head(top_n)
+        .index
+        .tolist()
+    )
+    recommended_articles = [aid for aid in recommended_articles if aid not in user_articles]
+    
+    return recommended_articles
+
+def generate_recommendations(user_id, embeddings, article_ids, user_clicks, top_n=5):
+    """
+    Combine le filtrage par contenu et collaboratif pour générer des recommandations.
+    """
+    content_recommendations = recommend_content_based(
+        user_id, embeddings, article_ids, user_clicks, top_n=10
+    )
+    collaborative_recommendations = recommend_collaborative(
+        user_id, user_clicks, top_n=10
+    )
+    combined_recommendations = content_recommendations[:int(0.8 * top_n)] + \
+                               collaborative_recommendations[:int(0.2 * top_n)]
+    combined_recommendations = list(dict.fromkeys(combined_recommendations))[:top_n]
+    
+    return combined_recommendations
