@@ -50,15 +50,4 @@ Ce projet utilise des Azure Functions pour générer des recommandations d'artic
 3. **Robustesse Technique** :
    - Vérification des connexions aux services Azure (Blob Storage, API Flask, etc.).
    - Gestion des erreurs avec des logs détaillés.
-
-## Installation et Utilisation
-
-### Prérequis
-- Python 3.8 ou plus.
-- Compte Azure avec Azure Functions et Azure Blob Storage configurés.
-
-### Installation
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/votre-repo/projet_recommendations.git
-   cd projet_recommendations
+  
